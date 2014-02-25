@@ -62,6 +62,7 @@ Define parameter by routing key in parameters.routing_key.
 #app/config/denetmen.yml
 parameters:
     denetmen:
+        base_url: "http://localhost:8000/"
         excluded:
             - "_wdt"
             - "_profiler"
@@ -100,4 +101,8 @@ Url requests will be generated:
     [GET] http://localhost:8000/check-bin/1122334455667788
     [GET] http://localhost:8000//user/1
     
+```
+When you get this command:
+```
+$app/console  denetmen:run:url-test
 ```
