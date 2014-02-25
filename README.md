@@ -13,7 +13,7 @@ Require the bundle in your composer.json file:
 ````
 {
     "require": {
-        "mstfleri/denetmen-bundle": "dev-master",
+        "mstfleri/denetmen-bundle": "0.1.1"
     }
 }
 ```
