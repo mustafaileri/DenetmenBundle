@@ -1,0 +1,7 @@
+services:
+    hezarfen.denetmen.service.denetmen_service:
+        class: Hezarfen\DenetmenBundle\Service\DenetmenService
+        arguments:
+          - "%denetmen%"
+          - "@router"
+          - Guzzle\Service\Client

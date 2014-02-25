@@ -1,0 +1,27 @@
+{
+    "name": "mstfleri/denetmen-bundle",
+    "description": "Url testing tool for symfony2 projects.",
+    "require": {
+        "php"                      : ">=5.3.0",
+        "symfony/framework-bundle" : ">=2.0",
+        "symfony/yaml": "~2.0",
+        "guzzle/guzzle": "~3.0",
+        "doctrine/collections": "1.2.*@dev"
+    },
+    "require-dev": {
+        "symfony/console": "~2.0"
+    },
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "mustafaileri",
+            "email": "mstfleri@gmail.com"
+        }
+    ],
+    "autoload": {
+        "psr-0": {
+            "Hezarfen\\DenetmenBundle\\": ""
+        }
+    },
+    "target-dir" : "Hezarfen/DenetmenBundle"
+}
