@@ -106,3 +106,12 @@ When you get this command:
 ```
 $app/console  denetmen:run:url-test
 ```
+
+Or you can use regex for routers.
+
+```
+$app/console  denetmen:run:url-test '#^get_(.*)$#i'
+```
+Filter by starting with "get_"
+
+![Screenshot](http://i.imgur.com/782d1J4.png?1)
