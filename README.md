@@ -18,6 +18,12 @@ Require the bundle in your composer.json file:
 }
 ```
 
+Install the bundle:
+
+```
+$ composer update mstfleri/denetmen-bundle
+```
+
 Register the bundle:
 
 ```php
@@ -29,12 +35,6 @@ public function registerBundles()
         new \Hezarfen\DenetmenBundle\HezarfenDenetmenBundle()
     );
 }
-```
-
-Install the bundle:
-
-```
-$ composer update mstfleri/denetmen-bundle
 ```
 
 That's all!
