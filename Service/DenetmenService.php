@@ -84,7 +84,7 @@ class DenetmenService
         foreach ($routes as $routeKey => $route) {
             try {
                 $url = $this->generateUrlForRoute($routeKey, $route);
-                $this->guzzleClient->setBaseUrl("http://localhost:8000");
+                $this->guzzleClient->setBaseUrl($this->config['base_url']);
                 $responseRow = array();
                 $responseRow['url'] = "<info>" . $url . "</info>";
                 $responseRow['routeKey'] = "<info>" . $routeKey . "</info>";
