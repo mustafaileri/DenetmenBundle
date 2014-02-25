@@ -92,12 +92,12 @@ get_user_routing_key:
     pattern:  /user/{id}
     defaults: { _controller: YourUserBundle:Default:getUser }
     methods:  [GET]
-    
+
 ```
 
 Url requests will be generated:
 ```
     [GET] http://localhost:8000/check-bin/1122334455667788
-    [GET] http://localhost:8000//user/{id}
+    [GET] http://localhost:8000//user/1
     
 ```
