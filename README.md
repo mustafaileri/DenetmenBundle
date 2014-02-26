@@ -115,3 +115,19 @@ $app/console  denetmen:run:url-test '#^get_(.*)$#i'
 Filter by starting with "get_"
 
 ![Screenshot](http://i.imgur.com/782d1J4.png?1)
+
+
+MIT License
+-----------
+
+License can be found [here](https://github.com/mustafaileri/DenetmenBundle/blob/master/LICENSE).
+
+Authors
+-------
+
+The bundle was originally created by [Mustafa İleri](http://blog.mustafaileri.com).
+See the list of [contributors](https://github.com/mustafaileri/DenetmenBundle/graphs/contributors).
+
+
+
+
