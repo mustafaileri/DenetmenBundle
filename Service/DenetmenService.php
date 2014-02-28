@@ -9,7 +9,11 @@ namespace Hezarfen\DenetmenBundle\Service;
 
 
 use Guzzle\Http\Exception\BadResponseException;
+use Guzzle\Http\Message\Request;
+use Guzzle\Http\Message\Response;
 use Guzzle\Service\Client;
+use Hezarfen\DenetmenBundle\Exception\DenetmenCommonException;
+use Hezarfen\DenetmenBundle\Exception\WrongContentTypeException;
 use Symfony\Bundle\FrameworkBundle\Routing\Router;
 use Symfony\Component\Routing\Exception\MissingMandatoryParametersException;
 use Symfony\Component\Routing\Route;
@@ -90,14 +94,22 @@ class DenetmenService
             $responseRow['routeKey'] = $routeKey;
             $responseRow['statusCode'] = "";
             $responseRow['responseTime'] = "";
+            $responseRow['responseType'] = "";
             $responseRow['exception'] = "";
+
             try {
                 $url = $this->generateUrlForRoute($routeKey, $route);
                 $this->guzzleClient->setBaseUrl($this->config['base_url']);
                 $responseRow['url'] = $url;
-                $request = $this->guzzleClient->createRequest("GET", $url)->send();
-                $responseRow['statusCode'] = $request->getStatusCode();
-                $responseRow['responseTime'] = $request->getInfo()["total_time"];
+                $response = $this->guzzleClient->createRequest("GET", $url)->send();
+                $responseRow['statusCode'] = $response->getStatusCode();
+                $responseRow['responseType'] = $response->getContentType();
+                $responseRow['responseTime'] = $response->getInfo()["total_time"];
+
+                if (isset ($this->config["router_configs"][$routeKey]["response"])) {
+                    $this->checkResponseStatements($response, $routeKey, $responseRow);
+                }
+
                 $this->formatRow("info", $responseRow);
                 $type = "info";
             } catch (BadResponseException $e) {
@@ -107,6 +119,9 @@ class DenetmenService
             } catch (MissingMandatoryParametersException $e) {
                 $type = "error";
                 $responseRow['exception'] = "MissingMandatoryParametersException";
+            } catch (DenetmenCommonException $e) {
+                $type = "error";
+                $responseRow['exception'] = $e->getMessage();
             }
 
             array_push($rows, $this->formatRow($type, $responseRow));
@@ -129,8 +144,8 @@ class DenetmenService
         if ($matched > 0) {
             foreach ($match as $key) {
                 $key = current($key);
-                if (isset($this->config["router_configs"][$routeKey][$key])) {
-                    $parameters[$key] = $this->config["router_configs"][$routeKey][$key];
+                if (isset($this->config["router_configs"][$routeKey]["parameters"][$key])) {
+                    $parameters[$key] = $this->config["router_configs"][$routeKey]["parameters"][$key];
                 } elseif (isset($this->config["router_configs"]["general"][$key])) {
                     $parameters[$key] = $this->config["router_configs"]["general"][$key];
                 } else {
@@ -149,8 +164,17 @@ class DenetmenService
      */
     public function formatRow($type, array $row)
     {
-        return array_map(function($item) use ($type) {
+        return array_map(function ($item) use ($type) {
             return "<" . $type . ">" . $item . "</" . $type . ">";
         }, $row);
+    }
+
+    public function checkResponseStatements(Response $response, $routeKey, array $responseRow)
+    {
+        if (isset ($this->config["router_configs"][$routeKey]["response"]["type"])
+            && $this->config["router_configs"][$routeKey]["response"]["type"] != $response->getContentType()
+        ) {
+            throw new WrongContentTypeException("Wrong content type: " . $this->config["router_configs"][$routeKey]["response"]["type"]);
+        }
     }
 }
