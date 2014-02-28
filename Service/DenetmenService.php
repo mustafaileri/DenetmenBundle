@@ -25,11 +25,15 @@ class DenetmenService
     /** @var  Client */
     protected $guzzleClient;
 
-    public function __construct($config, $router, $guzzleClient)
+    /** @var  \AppKernel */
+    protected $kernel;
+
+    public function __construct($config, $router, $guzzleClient, $kernel)
     {
         $this->config = $config;
         $this->router = $router;
         $this->guzzleClient = new $guzzleClient;
+        $this->kernel = $kernel;
     }
 
     /**
@@ -86,23 +90,25 @@ class DenetmenService
                 $url = $this->generateUrlForRoute($routeKey, $route);
                 $this->guzzleClient->setBaseUrl($this->config['base_url']);
                 $responseRow = array();
-                $responseRow['url'] = "<info>" . $url . "</info>";
-                $responseRow['routeKey'] = "<info>" . $routeKey . "</info>";
+                $responseRow['url'] = $url;
+                $responseRow['routeKey'] = $routeKey;
 
                 $request = $this->guzzleClient->createRequest("GET", $url)->send();
-                $responseRow['statusCode'] = "<info>" . $request->getStatusCode() . "</info>";
+                $responseRow['statusCode'] = $request->getStatusCode();
+                $responseRow['responseTime'] = $request->getInfo()["total_time"];
+                $this->formatRow("info", $responseRow);
+                $type = "info";
             } catch (BadResponseException $e) {
-                $responseRow['url'] = "<error>" . $url . "</error>";
-                $responseRow['routeKey'] = "<error>" . $routeKey . "</error>";;
-                $responseRow['statusCode'] = "<error>" . $e->getResponse()->getStatusCode() . "</error>";
+                $responseRow['statusCode'] = $e->getResponse()->getStatusCode();
+                $type = "error";
             } catch (MissingMandatoryParametersException $e) {
-                $responseRow['url'] = "<error>" . $url . "</error>";
-                $responseRow['routeKey'] = "<error>" . $routeKey . "</error>";;
-                $responseRow['statusCode'] = "<error>---</error>";
-                $responseRow['exception'] = "<error>" . $e->getMessage() . "</error>";
+                $responseRow['url'] = $url;
+                $responseRow['routeKey'] = $routeKey;
+                $responseRow['statusCode'] = "";
+                $type = "error";
             }
 
-            array_push($rows, $responseRow);
+            array_push($rows, $this->formatRow($type, $responseRow));
         }
         return $rows;
     }
@@ -122,7 +128,7 @@ class DenetmenService
         if ($matched > 0) {
             foreach ($match as $key) {
                 $key = current($key);
-                if (isset($this->config["parameters"][$routeKey][$key])) {
+                if (isset($this->config["routerConfigs"][$routeKey][$key])) {
                     $parameters[$key] = $this->config["parameters"][$routeKey][$key];
                 } elseif (isset($this->config["parameters"]["general"][$key])) {
                     $parameters[$key] = $this->config["parameters"]["general"][$key];
@@ -133,4 +139,17 @@ class DenetmenService
         }
         return $this->router->generate($routeKey, $parameters);
     }
-} 
+
+    /**
+     * Formatting rows bye type
+     * @param $type
+     * @param array $row
+     * @return array
+     */
+    public function formatRow($type, array $row)
+    {
+        return array_map(function($item) use ($type) {
+            return "<" . $type . ">" . $item . "</" . $type . ">";
+        }, $row);
+    }
+}
