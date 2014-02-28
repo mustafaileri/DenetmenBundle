@@ -13,7 +13,7 @@ Require the bundle in your composer.json file:
 ````
 {
     "require": {
-        "mstfleri/denetmen-bundle": "0.1.1"
+        "mstfleri/denetmen-bundle": "0.1.2"
     }
 }
 ```
@@ -57,7 +57,10 @@ Define excluded routings in excluded segment.
 Define general parameters in parameters.general segment.
 
 Define parameter by routing key in parameters.routing_key.
-  
+
+### Important Note ###
+Please replace denetmen.parameters with denetmen.routerconfigs looks like below if you are using 0.1.1 or older version.
+
 ```
 #app/config/denetmen.yml
 parameters:
@@ -69,7 +72,7 @@ parameters:
             - "_configurator"
             - "_acme_demo"
             - "_profiler_info"
-        parameters:
+        rotuer_configs:
             general:
                 id: 1
                 name: "Mustafa"
