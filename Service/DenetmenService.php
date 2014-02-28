@@ -129,10 +129,10 @@ class DenetmenService
         if ($matched > 0) {
             foreach ($match as $key) {
                 $key = current($key);
-                if (isset($this->config["rotuer_configs"][$routeKey][$key])) {
-                    $parameters[$key] = $this->config["rotuer_configs"][$routeKey][$key];
-                } elseif (isset($this->config["rotuer_configs"]["general"][$key])) {
-                    $parameters[$key] = $this->config["rotuer_configs"]["general"][$key];
+                if (isset($this->config["router_configs"][$routeKey][$key])) {
+                    $parameters[$key] = $this->config["router_configs"][$routeKey][$key];
+                } elseif (isset($this->config["router_configs"]["general"][$key])) {
+                    $parameters[$key] = $this->config["router_configs"]["general"][$key];
                 } else {
                     continue;
                 }

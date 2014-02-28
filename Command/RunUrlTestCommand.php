@@ -38,7 +38,7 @@ class RunUrlTestCommand extends ContainerAwareCommand
         $callableRoutes = $denetmenService->getCallableRoutes($denetmenService->getAllRoutes(), $input->getArgument('pattern'));
 
         $table = $this->getApplication()->getHelperSet()->get('table');
-        $table->setHeaders(array("URL", "Route Key", "Status", "Total Response Time", "Exception"));
+        $table->setHeaders(array("URL", "Route Key", "Status", "Response Time", "Exception"));
         $table->setRows($denetmenService->callRoutesUrl($callableRoutes));
         $table->render($output);
     }

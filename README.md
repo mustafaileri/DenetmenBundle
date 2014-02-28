@@ -72,7 +72,7 @@ parameters:
             - "_configurator"
             - "_acme_demo"
             - "_profiler_info"
-        rotuer_configs:
+        router_configs:
             general:
                 id: 1
                 name: "Mustafa"
