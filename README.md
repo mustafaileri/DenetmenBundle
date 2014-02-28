@@ -59,7 +59,7 @@ Define general parameters in parameters.general segment.
 Define parameter by routing key in parameters.routing_key.
 
 ### Important Note ###
-Please replace denetmen.parameters with denetmen.routerconfigs looks like below if you are using 0.1.1 or older version.
+Please replace denetmen.parameters with denetmen.router_configs looks like below if you are using 0.1.1 or older version.
 
 ```
 #app/config/denetmen.yml
