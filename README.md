@@ -2,7 +2,7 @@ DenetmenBundle
 ==============
 
 ## About ##
-Denetmen is a url testing tool for symfony2 projects via [Guzzle](https://github.com/guzzle/guzzle)
+Denetmen is a url testing tool for Symfony2 projects via [Guzzle](https://github.com/guzzle/guzzle)
 
 ## Installation ##
 
@@ -52,7 +52,7 @@ imports:
     ...
 ```
 
-### Configoration Parametes ###
+### Configuration Parameters ###
 Define excluded routings in excluded segment.
 
 Define general parameters in router_configs.general segment.
