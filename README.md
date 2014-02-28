@@ -13,7 +13,7 @@ Require the bundle in your composer.json file:
 ````
 {
     "require": {
-        "mstfleri/denetmen-bundle": "dev-master",
+        "mstfleri/denetmen-bundle": "0.1.1"
     }
 }
 ```
@@ -62,6 +62,7 @@ Define parameter by routing key in parameters.routing_key.
 #app/config/denetmen.yml
 parameters:
     denetmen:
+        base_url: "http://localhost:8000/"
         excluded:
             - "_wdt"
             - "_profiler"
@@ -101,3 +102,32 @@ Url requests will be generated:
     [GET] http://localhost:8000//user/1
     
 ```
+When you get this command:
+```
+$app/console  denetmen:run:url-test
+```
+
+Or you can use regex for routers.
+
+```
+$app/console  denetmen:run:url-test '#^get_(.*)$#i'
+```
+Filter by starting with "get_"
+
+![Screenshot](http://i.imgur.com/782d1J4.png?1)
+
+
+MIT License
+-----------
+
+License can be found [here](https://github.com/mustafaileri/DenetmenBundle/blob/master/LICENSE).
+
+Authors
+-------
+
+The bundle was originally created by [Mustafa İleri](http://blog.mustafaileri.com).
+See the list of [contributors](https://github.com/mustafaileri/DenetmenBundle/graphs/contributors).
+
+
+
+
