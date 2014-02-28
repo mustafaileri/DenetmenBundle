@@ -125,7 +125,7 @@ $app/console  denetmen:run:url-test '#^get_(.*)$#i'
 ```
 Filter by starting with "get_"
 
-![Screenshot](http://i.imgur.com/CsxJtJ1.png?1)
+![Screenshot](http://i.imgur.com/R6BpkfF.png?1)
 
 
 MIT License
