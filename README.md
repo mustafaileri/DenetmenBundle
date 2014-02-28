@@ -52,14 +52,17 @@ imports:
     ...
 ```
 
+### Configoration Parametes ###
 Define excluded routings in excluded segment.
 
-Define general parameters in parameters.general segment.
+Define general parameters in router_configs.general segment.
 
-Define parameter by routing key in parameters.routing_key.
+Define parameter by routing key in router_configs.routing_key.
 
-### Important Note ###
-Please replace denetmen.parameters with denetmen.router_configs looks like below if you are using 0.1.1 or older version.
+### Response Validators ###
+You can define reponse validations
+
+**type:** You can define response type validator.
 
 ```
 #app/config/denetmen.yml
@@ -78,10 +81,15 @@ parameters:
                 name: "Mustafa"
                 
             get_bin_number_routing_key:
-                cardNumber: 1122334455667788
+                parameters:
+                  cardNumber: 1122334455667788
+                response:
+                  type: "text/html; charset=UTF-8"
 
             get_user_routing_key:
                 id: 1
+                response:
+                  type: "text/html; charset=UTF-8"
 
 ```
 
