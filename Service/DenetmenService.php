@@ -28,12 +28,11 @@ class DenetmenService
     /** @var  \AppKernel */
     protected $kernel;
 
-    public function __construct($config, $router, $guzzleClient, $kernel)
+    public function __construct($config, $router, $guzzleClient)
     {
         $this->config = $config;
         $this->router = $router;
         $this->guzzleClient = new $guzzleClient;
-        $this->kernel = $kernel;
     }
 
     /**
@@ -86,13 +85,16 @@ class DenetmenService
     {
         $rows = array();
         foreach ($routes as $routeKey => $route) {
+            $responseRow = array();
+            $responseRow['url'] = "";
+            $responseRow['routeKey'] = $routeKey;
+            $responseRow['statusCode'] = "";
+            $responseRow['responseTime'] = "";
+            $responseRow['exception'] = "";
             try {
                 $url = $this->generateUrlForRoute($routeKey, $route);
                 $this->guzzleClient->setBaseUrl($this->config['base_url']);
-                $responseRow = array();
                 $responseRow['url'] = $url;
-                $responseRow['routeKey'] = $routeKey;
-
                 $request = $this->guzzleClient->createRequest("GET", $url)->send();
                 $responseRow['statusCode'] = $request->getStatusCode();
                 $responseRow['responseTime'] = $request->getInfo()["total_time"];
@@ -101,11 +103,10 @@ class DenetmenService
             } catch (BadResponseException $e) {
                 $responseRow['statusCode'] = $e->getResponse()->getStatusCode();
                 $type = "error";
+                $responseRow['exception'] = "BadResponseException";
             } catch (MissingMandatoryParametersException $e) {
-                $responseRow['url'] = $url;
-                $responseRow['routeKey'] = $routeKey;
-                $responseRow['statusCode'] = "";
                 $type = "error";
+                $responseRow['exception'] = "MissingMandatoryParametersException";
             }
 
             array_push($rows, $this->formatRow($type, $responseRow));
@@ -128,10 +129,10 @@ class DenetmenService
         if ($matched > 0) {
             foreach ($match as $key) {
                 $key = current($key);
-                if (isset($this->config["routerConfigs"][$routeKey][$key])) {
-                    $parameters[$key] = $this->config["parameters"][$routeKey][$key];
-                } elseif (isset($this->config["parameters"]["general"][$key])) {
-                    $parameters[$key] = $this->config["parameters"]["general"][$key];
+                if (isset($this->config["rotuer_configs"][$routeKey][$key])) {
+                    $parameters[$key] = $this->config["rotuer_configs"][$routeKey][$key];
+                } elseif (isset($this->config["rotuer_configs"]["general"][$key])) {
+                    $parameters[$key] = $this->config["rotuer_configs"]["general"][$key];
                 } else {
                     continue;
                 }
