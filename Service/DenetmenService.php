@@ -115,7 +115,7 @@ class DenetmenService
             } catch (BadResponseException $e) {
                 $responseRow['statusCode'] = $e->getResponse()->getStatusCode();
                 $type = "error";
-                $responseRow['exception'] = "BadResponseException";
+                $responseRow['exception'] = get_class($e);
             } catch (MissingMandatoryParametersException $e) {
                 $type = "error";
                 $responseRow['exception'] = "MissingMandatoryParametersException";
