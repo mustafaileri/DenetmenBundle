@@ -9,12 +9,14 @@ namespace Hezarfen\DenetmenBundle\Service;
 
 
 use Guzzle\Http\Exception\BadResponseException;
-use Guzzle\Http\Message\Request;
 use Guzzle\Http\Message\Response;
 use Guzzle\Service\Client;
+use Hezarfen\DenetmenBundle\Event\ErrorEvent;
 use Hezarfen\DenetmenBundle\Exception\DenetmenCommonException;
 use Hezarfen\DenetmenBundle\Exception\WrongContentTypeException;
 use Symfony\Bundle\FrameworkBundle\Routing\Router;
+use Symfony\Component\DomCrawler\Crawler;
+use Symfony\Component\EventDispatcher\EventDispatcher;
 use Symfony\Component\Routing\Exception\MissingMandatoryParametersException;
 use Symfony\Component\Routing\Route;
 
@@ -24,19 +26,27 @@ class DenetmenService
     private $router;
 
     /** @var  array */
-    protected $config;
+    private $config;
 
     /** @var  Client */
-    protected $guzzleClient;
+    private $guzzleClient;
 
     /** @var  \AppKernel */
-    protected $kernel;
+    private $kernel;
 
-    public function __construct($config, $router, $guzzleClient)
+    /** @var  EventDispatcher */
+    private $eventDispatcher;
+
+    /** @var  Crawler */
+    private $crawler;
+
+    public function __construct($config, $router, $guzzleClient, $eventDispatcher, $crawler)
     {
         $this->config = $config;
         $this->router = $router;
         $this->guzzleClient = new $guzzleClient;
+        $this->eventDispatcher = $eventDispatcher;
+        $this->crawler = $crawler;
     }
 
     /**
@@ -88,13 +98,13 @@ class DenetmenService
     public function callRoutesUrl(array $routes)
     {
         $rows = array();
+        $errors = array();
         foreach ($routes as $routeKey => $route) {
             $responseRow = array();
             $responseRow['url'] = "";
             $responseRow['routeKey'] = $routeKey;
             $responseRow['statusCode'] = "";
             $responseRow['responseTime'] = "";
-            $responseRow['responseType'] = "";
             $responseRow['exception'] = "";
 
             try {
@@ -103,7 +113,6 @@ class DenetmenService
                 $responseRow['url'] = $url;
                 $response = $this->guzzleClient->createRequest("GET", $url)->send();
                 $responseRow['statusCode'] = $response->getStatusCode();
-                $responseRow['responseType'] = $response->getContentType();
                 $responseRow['responseTime'] = $response->getInfo()["total_time"];
 
                 if (isset ($this->config["router_configs"][$routeKey]["response"])) {
@@ -115,17 +124,27 @@ class DenetmenService
             } catch (BadResponseException $e) {
                 $responseRow['statusCode'] = $e->getResponse()->getStatusCode();
                 $type = "error";
-                $responseRow['exception'] = "BadResponseException";
+                $responseRow['exception'] = get_class($e);
+                array_push($errors, $responseRow);
             } catch (MissingMandatoryParametersException $e) {
                 $type = "error";
-                $responseRow['exception'] = "MissingMandatoryParametersException";
+                $responseRow['exception'] = "BadResponseException";
+                array_push($errors, $responseRow);
             } catch (DenetmenCommonException $e) {
                 $type = "error";
                 $responseRow['exception'] = $e->getMessage();
+                array_push($errors, $responseRow);
             }
 
             array_push($rows, $this->formatRow($type, $responseRow));
         }
+
+        if (sizeof($errors) > 0) {
+            $errorEvent = new ErrorEvent();
+            $errorEvent->setErrorRows($errors);
+            $this->eventDispatcher->dispatch('hezarfen.denetmen.events.error', $errorEvent);
+        }
+
         return $rows;
     }
 
@@ -171,10 +190,16 @@ class DenetmenService
 
     public function checkResponseStatements(Response $response, $routeKey, array $responseRow)
     {
+        /** @var Crawler $crawler */
+        $crawler = new $this->crawler();
+        $crawler->addHtmlContent($response->getBody());
+        var_dump($crawler->filter("body > header >  div > nav > ul > li")->text());
         if (isset ($this->config["router_configs"][$routeKey]["response"]["type"])
             && $this->config["router_configs"][$routeKey]["response"]["type"] != $response->getContentType()
         ) {
             throw new WrongContentTypeException("Wrong content type: " . $this->config["router_configs"][$routeKey]["response"]["type"]);
         }
+
+
     }
 }

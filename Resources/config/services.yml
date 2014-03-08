@@ -5,3 +5,13 @@ services:
           - "%denetmen%"
           - "@router"
           - Guzzle\Service\Client
+          - "@event_dispatcher"
+          - Symfony\Component\DomCrawler\Crawler
+
+    hezarfen.denetmen.event_listener.event_listener:
+        class: Hezarfen\DenetmenBundle\EventListener\DenetmenEventListener
+        arguments:
+            - "@mailer"
+            - "@twig"
+        tags:
+            - { name: kernel.event_listener, event: hezarfen.denetmen.events.error, method: onError}

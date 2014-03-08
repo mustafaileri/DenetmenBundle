@@ -1,0 +1,25 @@
+{% extends 'HezarfenDenetmenBundle:Template:layout.html.twig' %}
+{% block body %}
+    <table>
+        <thead>
+        <tr>
+            <td>Url</td>
+            <td>Route</td>
+            <td>Status</td>
+            <td>Response Time</td>
+            <td>Exception</td>
+        </tr>
+        </thead>
+        <tbody>
+        {% for error in errors %}
+            <tr>
+                <td>{{ error.url }}</td>
+                <td>{{ error.routeKey }}</td>
+                <td>{{ error.statusCode }}</td>
+                <td>{{ error.responseTime }}</td>
+                <td>{{ error.exception }}</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}
