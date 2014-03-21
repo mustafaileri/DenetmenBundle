@@ -13,3 +13,4 @@ app/config/parameters.ini
 app/config/parameters.yml
 .idea/
 composer.lock
+.DS_Store
