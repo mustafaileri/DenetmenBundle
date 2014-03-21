@@ -13,11 +13,11 @@
         <tbody>
         {% for error in errors %}
             <tr>
-                <td>{{ error.url }}</td>
-                <td>{{ error.routeKey }}</td>
-                <td>{{ error.statusCode }}</td>
-                <td>{{ error.responseTime }}</td>
-                <td>{{ error.exception }}</td>
+                <td>{{ error.url|striptags }}</td>
+                <td>{{ error.routeKey|striptags }}</td>
+                <td>{{ error.statusCode|striptags }}</td>
+                <td>{{ error.responseTime|striptags }}</td>
+                <td>{{ error.exception|striptags }}</td>
             </tr>
         {% endfor %}
         </tbody>

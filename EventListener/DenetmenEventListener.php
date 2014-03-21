@@ -25,16 +25,18 @@ class DenetmenEventListener
 
     public function onError(ErrorEvent $event)
     {
-        $message = \Swift_Message::newInstance()
-            ->setSubject("Deneme")
-            ->setFrom("test@deneme.com")
-            ->setTo("mi@mustafaileri.com")
-            ->setContentType("text/html")
-            ->setBody($this->twig->render(
-                "HezarfenDenetmenBundle:Template:errors.html.twig",
-                array("errors" => $event->getErrorRows())
-            ));
+        if ($event->getCommandOptions()['alert-email']) {
+            $message = \Swift_Message::newInstance()
+                ->setSubject("Deneme")
+                ->setFrom("test@deneme.com")
+                ->setTo("mi@mustafaileri.com")
+                ->setContentType("text/html")
+                ->setBody($this->twig->render(
+                    "HezarfenDenetmenBundle:Template:errors.html.twig",
+                    array("errors" => $event->getErrorRows())
+                ));
 
-        $this->mailerService->send($message);
+            $this->mailerService->send($message);
+        }
     }
 } 

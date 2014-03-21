@@ -5,8 +5,10 @@ services:
           - "%denetmen%"
           - "@router"
           - Guzzle\Service\Client
-          - "@event_dispatcher"
-          - Symfony\Component\DomCrawler\Crawler
+          -
+              type: @hezarfen.denetmen.validator.response.type
+              filter: @hezarfen.denetmen.validator.response.filter
+              max_response_time: @hezarfen.denetmen.validator.response.max_response_time
 
     hezarfen.denetmen.event_listener.event_listener:
         class: Hezarfen\DenetmenBundle\EventListener\DenetmenEventListener

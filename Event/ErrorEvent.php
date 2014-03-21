@@ -13,16 +13,17 @@ use Symfony\Component\EventDispatcher\Event;
 class ErrorEvent extends Event
 {
     private $errorRows = array();
+    private $commandOptions = array();
 
-    public function __construct()
+    public function __construct($options)
     {
-
+        $this->commandOptions = $options;
     }
 
     /**
      * @param array $errorRows
      */
-    public function setErrorRows($errorRows)
+    public function setErrorRows(array $errorRows)
     {
         $this->errorRows = $errorRows;
     }
@@ -35,5 +36,20 @@ class ErrorEvent extends Event
         return $this->errorRows;
     }
 
+    /**
+     * @param array $commandOptions
+     */
+    public function setCommandOptions(array $commandOptions)
+    {
+        $this->commandOptions = $commandOptions;
+    }
 
-} 
+
+    /**
+     * @return array
+     */
+    public function getCommandOptions()
+    {
+        return $this->commandOptions;
+    }
+}

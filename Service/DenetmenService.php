@@ -11,14 +11,12 @@ namespace Hezarfen\DenetmenBundle\Service;
 use Guzzle\Http\Exception\BadResponseException;
 use Guzzle\Http\Message\Response;
 use Guzzle\Service\Client;
-use Hezarfen\DenetmenBundle\Event\ErrorEvent;
 use Hezarfen\DenetmenBundle\Exception\DenetmenCommonException;
-use Hezarfen\DenetmenBundle\Exception\WrongContentTypeException;
+use Hezarfen\DenetmenBundle\Validator\ValidatorInterface;
 use Symfony\Bundle\FrameworkBundle\Routing\Router;
-use Symfony\Component\DomCrawler\Crawler;
-use Symfony\Component\EventDispatcher\EventDispatcher;
 use Symfony\Component\Routing\Exception\MissingMandatoryParametersException;
 use Symfony\Component\Routing\Route;
+use Symfony\Component\Routing\RouteCollection;
 
 class DenetmenService
 {
@@ -31,23 +29,118 @@ class DenetmenService
     /** @var  Client */
     private $guzzleClient;
 
-    /** @var  \AppKernel */
-    private $kernel;
+    /** @var  array */
+    private $validators;
 
-    /** @var  EventDispatcher */
-    private $eventDispatcher;
+    /** @var  RouteCollection */
+    private $routeCollection;
 
-    /** @var  Crawler */
-    private $crawler;
+    /**
+     * Construction Method
+     * @param $config
+     * @param $router
+     * @param $guzzleClient
+     * @param $validators
+     */
+    public function __construct($config, $router, $guzzleClient, $validators)
+    {
+        $this->setConfig($config) ;
+        $this->setRouter($router);
+        $this->setGuzzleClient(new $guzzleClient);
+        $this->setValidators($validators);
+        $this->setRouteCollection($this->router->getRouteCollection());
+    }
 
-    public function __construct($config, $router, $guzzleClient, $eventDispatcher, $crawler)
+    /**
+     * Config setter
+     * @param $config
+     */
+    public function setConfig($config)
     {
         $this->config = $config;
-        $this->router = $router;
-        $this->guzzleClient = new $guzzleClient;
-        $this->eventDispatcher = $eventDispatcher;
-        $this->crawler = $crawler;
     }
+
+    /**
+     * Config getter
+     * @return array
+     */
+    public function getConfig()
+    {
+        return $this->config;
+    }
+
+    /**
+     * Guzzle client setter
+     * @param \Guzzle\Service\Client $guzzleClient
+     */
+    public function setGuzzleClient($guzzleClient)
+    {
+        $this->guzzleClient = $guzzleClient;
+    }
+
+    /**
+     * Guzzle client getter
+     * @return \Guzzle\Service\Client
+     */
+    public function getGuzzleClient()
+    {
+        return $this->guzzleClient;
+    }
+
+    /**
+     * Set RouteCollection
+     * @param \Symfony\Component\Routing\RouteCollection $routeCollection
+     */
+    public function setRouteCollection($routeCollection)
+    {
+        $this->routeCollection = $routeCollection;
+    }
+
+    /**
+     * Get RouteCollection
+     * @return \Symfony\Component\Routing\RouteCollection
+     */
+    public function getRouteCollection()
+    {
+        return $this->routeCollection;
+    }
+
+    /**
+     * Set Router
+     * @param \Symfony\Bundle\FrameworkBundle\Routing\Router $router
+     */
+    public function setRouter($router)
+    {
+        $this->router = $router;
+    }
+
+    /**
+     * Get Router
+     * @return \Symfony\Bundle\FrameworkBundle\Routing\Router
+     */
+    public function getRouter()
+    {
+        return $this->router;
+    }
+
+    /**
+     * Set Validators
+     * @param array $validators
+     */
+    public function setValidators($validators)
+    {
+        $this->validators = $validators;
+    }
+
+    /**
+     * Get Validators
+     * @return array
+     */
+    public function getValidators()
+    {
+        return $this->validators;
+    }
+
 
     /**
      * Get all routes
@@ -55,7 +148,7 @@ class DenetmenService
      */
     public function getAllRoutes()
     {
-        return $this->router->getRouteCollection()->all();
+        return $this->routeCollection->all();
     }
 
     /**
@@ -66,11 +159,10 @@ class DenetmenService
      */
     public function getCallableRoutes(array $routes, $regexPattern)
     {
-
         /** @var Route $route */
         foreach ($routes as $routeKey => $route) {
             //Removed excluded routes.
-            if (in_array($routeKey, $this->config["excluded"])) {
+            if (isset($this->config["excluded"]) && in_array($routeKey, $this->config["excluded"])) {
                 unset($routes[$routeKey]);
                 continue;
             }
@@ -80,7 +172,6 @@ class DenetmenService
                 unset($routes[$routeKey]);
                 continue;
             }
-
             $sizeOfRouteMethods = sizeof($route->getMethods());
             if (!($sizeOfRouteMethods == 0 || in_array("GET", $route->getMethods()))) {
                 unset($routes[$routeKey]);
@@ -91,61 +182,33 @@ class DenetmenService
     }
 
     /**
-     * Call route urls
-     * @param array $routes
+     * @param Route $route
+     * @param $routeKey
      * @return array
      */
-    public function callRoutesUrl(array $routes)
+    public function callRouteUrl(Route $route, $routeKey)
     {
-        $rows = array();
-        $errors = array();
-        foreach ($routes as $routeKey => $route) {
             $responseRow = array();
             $responseRow['url'] = "";
             $responseRow['routeKey'] = $routeKey;
             $responseRow['statusCode'] = "";
             $responseRow['responseTime'] = "";
             $responseRow['exception'] = "";
-
             try {
-                $url = $this->generateUrlForRoute($routeKey, $route);
-                $this->guzzleClient->setBaseUrl($this->config['base_url']);
-                $responseRow['url'] = $url;
-                $response = $this->guzzleClient->createRequest("GET", $url)->send();
-                $responseRow['statusCode'] = $response->getStatusCode();
-                $responseRow['responseTime'] = $response->getInfo()["total_time"];
-
-                if (isset ($this->config["router_configs"][$routeKey]["response"])) {
-                    $this->checkResponseStatements($response, $routeKey, $responseRow);
-                }
-
-                $this->formatRow("info", $responseRow);
-                $type = "info";
+                $responseRow = $this->trySendRequest($routeKey, $route, $responseRow);
             } catch (BadResponseException $e) {
+                $responseRow["url"] = $this->generateUrlForRoute($routeKey, $route);
                 $responseRow['statusCode'] = $e->getResponse()->getStatusCode();
-                $type = "error";
                 $responseRow['exception'] = get_class($e);
-                array_push($errors, $responseRow);
             } catch (MissingMandatoryParametersException $e) {
-                $type = "error";
                 $responseRow['exception'] = "BadResponseException";
-                array_push($errors, $responseRow);
             } catch (DenetmenCommonException $e) {
-                $type = "error";
+                $responseRow["url"] = $this->generateUrlForRoute($routeKey, $route);
                 $responseRow['exception'] = $e->getMessage();
-                array_push($errors, $responseRow);
             }
 
-            array_push($rows, $this->formatRow($type, $responseRow));
-        }
 
-        if (sizeof($errors) > 0) {
-            $errorEvent = new ErrorEvent();
-            $errorEvent->setErrorRows($errors);
-            $this->eventDispatcher->dispatch('hezarfen.denetmen.events.error', $errorEvent);
-        }
-
-        return $rows;
+        return $responseRow;
     }
 
     /**
@@ -172,6 +235,7 @@ class DenetmenService
                 }
             }
         }
+
         return $this->router->generate($routeKey, $parameters);
     }
 
@@ -188,18 +252,27 @@ class DenetmenService
         }, $row);
     }
 
+    public function trySendRequest($routeKey, Route $route, array $responseRow)
+    {
+        $url = $this->generateUrlForRoute($routeKey, $route);
+        $this->guzzleClient->setBaseUrl($this->config['base_url']);
+        $responseRow['url'] = $url;
+        $response = $this->guzzleClient->createRequest("GET", $url)->send();
+        $responseRow['statusCode'] = $response->getStatusCode();
+        $responseRow['responseTime'] = $response->getInfo()["total_time"];
+
+        if (isset ($this->config["router_configs"][$routeKey]["response"])) {
+            $this->checkResponseStatements($response, $routeKey, $responseRow);
+        }
+        return $responseRow;
+    }
+
     public function checkResponseStatements(Response $response, $routeKey, array $responseRow)
     {
-        /** @var Crawler $crawler */
-        $crawler = new $this->crawler();
-        $crawler->addHtmlContent($response->getBody());
-        var_dump($crawler->filter("body > header >  div > nav > ul > li")->text());
-        if (isset ($this->config["router_configs"][$routeKey]["response"]["type"])
-            && $this->config["router_configs"][$routeKey]["response"]["type"] != $response->getContentType()
-        ) {
-            throw new WrongContentTypeException("Wrong content type: " . $this->config["router_configs"][$routeKey]["response"]["type"]);
+        foreach ($this->config["router_configs"][$routeKey]["response"] as $key => $value) {
+            /** @var ValidatorInterface $validator */
+            $validator = $this->validators[$key];
+            $validator->validate($routeKey, $response, $value);
         }
-
-
     }
 }

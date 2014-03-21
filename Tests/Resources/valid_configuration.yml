@@ -1,0 +1,17 @@
+parameters:
+    denetmen:
+        base_url: "http://localhost:8000/"
+        excluded:
+          - "excluded"
+        router_configs:
+            general:
+              name: "Denetmen"
+            denetmen_foo:
+              parameters:
+                foo: "foo"
+              response:
+                type: "text/html; charset=utf-8"
+                filter:
+                  node_traversing:
+                    - ['body', 'Test']
+                max_response_time: 1
