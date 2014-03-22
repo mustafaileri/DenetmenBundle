@@ -19,4 +19,4 @@ class ResponseTypeValidator implements ValidatorInterface
             throw new WrongContentTypeException("Wrong content type: " . $expectedContentType);
         }
     }
-} 
+}

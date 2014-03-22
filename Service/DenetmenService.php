@@ -4,9 +4,7 @@
  * @package Hezarfen\DenetmenBundle\Service
  */
 
-
 namespace Hezarfen\DenetmenBundle\Service;
-
 
 use Guzzle\Http\Exception\BadResponseException;
 use Guzzle\Http\Message\Response;
@@ -141,7 +139,6 @@ class DenetmenService
         return $this->validators;
     }
 
-
     /**
      * Get all routes
      * @return \Symfony\Component\Routing\Route[]
@@ -153,7 +150,7 @@ class DenetmenService
 
     /**
      * Get callable routes for current rules
-     * @param array $routes
+     * @param  array $routes
      * @param $regexPattern
      * @return array
      */
@@ -178,11 +175,12 @@ class DenetmenService
                 continue;
             }
         }
+
         return $routes;
     }
 
     /**
-     * @param Route $route
+     * @param  Route $route
      * @param $routeKey
      * @return array
      */
@@ -207,14 +205,13 @@ class DenetmenService
                 $responseRow['exception'] = $e->getMessage();
             }
 
-
         return $responseRow;
     }
 
     /**
      * Generate url for route object
      * @param $routeKey
-     * @param Route $route
+     * @param  Route  $route
      * @return string
      */
     public function generateUrlForRoute($routeKey, Route $route)
@@ -242,7 +239,7 @@ class DenetmenService
     /**
      * Formatting rows bye type
      * @param $type
-     * @param array $row
+     * @param  array $row
      * @return array
      */
     public function formatRow($type, array $row)
@@ -264,6 +261,7 @@ class DenetmenService
         if (isset ($this->config["router_configs"][$routeKey]["response"])) {
             $this->checkResponseStatements($response, $routeKey, $responseRow);
         }
+
         return $responseRow;
     }
 

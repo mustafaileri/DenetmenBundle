@@ -1,11 +1,8 @@
 <?php
 
-
 namespace Hezarfen\DenetmenBundle\Tests\Validator;
 
-
 use Guzzle\Http\Message\Response;
-use Hezarfen\DenetmenBundle\Validator\ResponseFilterValidator;
 use Hezarfen\DenetmenBundle\Validator\ResponseTypeValidator;
 
 class ResponseTypeValidatorTest extends \PHPUnit_Framework_TestCase

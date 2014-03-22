@@ -2,7 +2,6 @@
 
 namespace Hezarfen\DenetmenBundle\Validator;
 
-
 use Guzzle\Http\Message\Response;
 use Hezarfen\DenetmenBundle\Exception\ResponseFilterException;
 use Symfony\Component\DomCrawler\Crawler;
@@ -36,4 +35,4 @@ class ResponseFilterValidator implements ValidatorInterface
         }
     }
 
-} 
+}

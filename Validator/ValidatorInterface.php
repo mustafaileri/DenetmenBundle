@@ -8,10 +8,9 @@
 
 namespace Hezarfen\DenetmenBundle\Validator;
 
-
 use Guzzle\Http\Message\Response;
 
 interface ValidatorInterface
 {
     public function validate($routeKey, Response $response,  $config);
-} 
+}

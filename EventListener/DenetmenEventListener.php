@@ -4,9 +4,7 @@
  * @package Hezarfen\DenetmenBundle\EventListener
  */
 
-
 namespace Hezarfen\DenetmenBundle\EventListener;
-
 
 use Hezarfen\DenetmenBundle\Event\ErrorEvent;
 
@@ -39,4 +37,4 @@ class DenetmenEventListener
             $this->mailerService->send($message);
         }
     }
-} 
+}

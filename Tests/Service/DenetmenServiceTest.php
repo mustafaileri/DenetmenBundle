@@ -1,8 +1,6 @@
 <?php
 
-
 namespace Hezarfen\DenetmenBundle\Tests\Service;
-
 
 use Guzzle\Http\Client;
 use Guzzle\Http\Message\Response;
@@ -10,12 +8,10 @@ use Hezarfen\DenetmenBundle\Service\DenetmenService;
 use Hezarfen\DenetmenBundle\Validator\MaxResponseTimeValidator;
 use Hezarfen\DenetmenBundle\Validator\ResponseFilterValidator;
 use Hezarfen\DenetmenBundle\Validator\ResponseTypeValidator;
-use Symfony\Component\DependencyInjection\Loader\YamlFileLoader;
 use Symfony\Component\DomCrawler\Crawler;
 use Symfony\Component\Finder\Finder;
 use Symfony\Component\Routing\Route;
 use Symfony\Component\Routing\RouteCollection;
-use Symfony\Component\Yaml\Parser;
 use Symfony\Component\Yaml\Yaml;
 
 class DenetmenServiceTest extends \PHPUnit_Framework_TestCase
@@ -91,7 +87,6 @@ class DenetmenServiceTest extends \PHPUnit_Framework_TestCase
         $this->routeCollection = $routeCollection;
     }
 
-
     private function setValidatorsMock()
     {
         $this->validatorsMock = array(
@@ -136,6 +131,7 @@ class DenetmenServiceTest extends \PHPUnit_Framework_TestCase
             ->disableOriginalConstructor()->setMethods(array('send'))->getMock();
 
         $responseMock->expects($this->any())->method('send')->will($this->returnValue($responseObject));
+
         return $responseMock;
 
     }

@@ -4,9 +4,7 @@
  * @package Hezarfen\DenetmenBundle\Event
  */
 
-
 namespace Hezarfen\DenetmenBundle\Event;
-
 
 use Symfony\Component\EventDispatcher\Event;
 
@@ -43,7 +41,6 @@ class ErrorEvent extends Event
     {
         $this->commandOptions = $commandOptions;
     }
-
 
     /**
      * @return array

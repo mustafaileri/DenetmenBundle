@@ -4,7 +4,6 @@
  * @package Hezarfen\DenetmenBundle\Command
  */
 
-
 namespace Hezarfen\DenetmenBundle\Command;
 
 use Hezarfen\DenetmenBundle\Event\ErrorEvent;
@@ -12,7 +11,6 @@ use Hezarfen\DenetmenBundle\Service\DenetmenService;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Helper\ProgressHelper;
 use Symfony\Component\Console\Helper\TableHelper;
-use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -32,8 +30,8 @@ class RunUrlTestCommand extends ContainerAwareCommand
 
     /**
      * Execute command
-     * @param InputInterface $input
-     * @param OutputInterface $output
+     * @param  InputInterface  $input
+     * @param  OutputInterface $output
      * @return int|null|void
      */
     protected function execute(InputInterface $input, OutputInterface $output)
@@ -67,10 +65,9 @@ class RunUrlTestCommand extends ContainerAwareCommand
         $table->setRows($outputRows);
         $table->render($output);
 
-        $errors = array_filter($outputRows, function($response) {
+        $errors = array_filter($outputRows, function ($response) {
             return ($response['exception'])? true: false;
         });
-
 
         if (sizeof($errors) > 0) {
             $errorEvent = new ErrorEvent($input->getOptions());

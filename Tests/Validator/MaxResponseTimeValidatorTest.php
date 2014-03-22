@@ -1,8 +1,6 @@
 <?php
 
-
 namespace Hezarfen\DenetmenBundle\Tests\Validator;
-
 
 use Guzzle\Http\Message\Response;
 use Hezarfen\DenetmenBundle\Validator\MaxResponseTimeValidator;

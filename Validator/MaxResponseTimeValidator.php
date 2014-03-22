@@ -1,8 +1,6 @@
 <?php
 
-
 namespace Hezarfen\DenetmenBundle\Validator;
-
 
 use Guzzle\Http\Message\Response;
 use Hezarfen\DenetmenBundle\Exception\MaxResponseTimeException;
@@ -18,5 +16,4 @@ class MaxResponseTimeValidator implements ValidatorInterface
         }
     }
 
-
-} 
+}
