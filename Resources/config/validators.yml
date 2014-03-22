@@ -1,0 +1,11 @@
+services:
+    hezarfen.denetmen.validator.response.type:
+        class: Hezarfen\DenetmenBundle\Validator\ResponseTypeValidator
+
+    hezarfen.denetmen.validator.response.filter:
+        class: Hezarfen\DenetmenBundle\Validator\ResponseFilterValidator
+        arguments:
+            - Symfony\Component\DomCrawler\Crawler
+
+    hezarfen.denetmen.validator.response.max_response_time:
+            class: Hezarfen\DenetmenBundle\Validator\MaxResponseTimeValidator

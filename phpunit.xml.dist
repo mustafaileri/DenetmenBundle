@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<phpunit colors="true" processIsolation="false" stopOnFailure="false" bootstrap="./Tests/autoload.php.dist">
+    <testsuites>
+        <testsuite name="DenetmenBundle Test Suite">
+            <directory>./Tests</directory>
+        </testsuite>
+    </testsuites>
+    <filter>
+        <whitelist>
+            <exclude>
+                <directory>vendor</directory>
+                <directory>DependencyInjection</directory>
+                <directory>EventListener</directory>
+                <directory>Resources</directory>
+                <directory>Command</directory>
+                <directory>Event</directory>
+            </exclude>
+        </whitelist>
+    </filter>
+</phpunit>

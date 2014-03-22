@@ -5,3 +5,15 @@ services:
           - "%denetmen%"
           - "@router"
           - Guzzle\Service\Client
+          -
+              type: @hezarfen.denetmen.validator.response.type
+              filter: @hezarfen.denetmen.validator.response.filter
+              max_response_time: @hezarfen.denetmen.validator.response.max_response_time
+
+    hezarfen.denetmen.event_listener.event_listener:
+        class: Hezarfen\DenetmenBundle\EventListener\DenetmenEventListener
+        arguments:
+            - "@mailer"
+            - "@twig"
+        tags:
+            - { name: kernel.event_listener, event: hezarfen.denetmen.events.error, method: onError}
