@@ -197,7 +197,8 @@ class DenetmenService
             } catch (BadResponseException $e) {
                 $responseRow["url"] = $this->generateUrlForRoute($routeKey, $route);
                 $responseRow['statusCode'] = $e->getResponse()->getStatusCode();
-                $responseRow['exception'] = get_class($e);
+                $reflector = new \ReflectionClass($e);
+                $responseRow['exception'] = $reflector->getShortName();
             } catch (MissingMandatoryParametersException $e) {
                 $responseRow['exception'] = "BadResponseException";
             } catch (DenetmenCommonException $e) {
