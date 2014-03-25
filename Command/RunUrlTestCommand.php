@@ -24,8 +24,8 @@ class RunUrlTestCommand extends ContainerAwareCommand
     {
         $this->setName('denetmen:run:url-test')
             ->setDescription('Test urls.')
-            ->addOption('pattern', null, InputOption::VALUE_OPTIONAL, "Routing regex for testing.", false)
-            ->addOption("alert-email", null, InputOption::VALUE_OPTIONAL, "Sending an email on error.", false);
+            ->addOption('pattern', 'p', InputOption::VALUE_OPTIONAL, "Routing regex for testing.", false)
+            ->addOption("alert-email", 'e', InputOption::VALUE_OPTIONAL, "Sending an email on error.", false);
     }
 
     /**
