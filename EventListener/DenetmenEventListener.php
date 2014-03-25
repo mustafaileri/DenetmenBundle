@@ -25,9 +25,9 @@ class DenetmenEventListener
     {
         if ($event->getCommandOptions()['alert-email']) {
             $message = \Swift_Message::newInstance()
-                ->setSubject("Deneme")
-                ->setFrom("test@deneme.com")
-                ->setTo("mi@mustafaileri.com")
+                ->setSubject("Denetmen Errors")
+                ->setTo($event->getCommandOptions()['alert-email'])
+                ->setFrom(sprintf('denetmen-error@%s', gethostname()))
                 ->setContentType("text/html")
                 ->setBody($this->twig->render(
                     "HezarfenDenetmenBundle:Template:errors.html.twig",
