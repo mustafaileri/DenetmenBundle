@@ -1,4 +1,4 @@
-# DenetmenBundle ![project status](http://stillmaintained.com/mustafaileri/DenetmenBundle.png) [![Build Status](https://travis-ci.org/mustafaileri/DenetmenBundle.svg?branch=master)](https://travis-ci.org/mustafaileri/DenetmenBundle) #
+# DenetmenBundle [![Build Status](https://travis-ci.org/mustafaileri/DenetmenBundle.svg?branch=master)](https://travis-ci.org/mustafaileri/DenetmenBundle) #
 
 ## About ##
 Denetmen is a url testing tool for Symfony2 projects via [Guzzle](https://github.com/guzzle/guzzle)
