@@ -16,7 +16,7 @@ Denetmen is a url testing tool for Symfony2 projects via [Guzzle](https://github
 
 Require the bundle in your composer.json file:
 
-````
+```php
 {
     "require": {
         "mstfleri/denetmen-bundle": "dev-master"
@@ -142,12 +142,12 @@ Example:
 ```
 
 
-#####How to run?
+#### How to run?
 ```
 $app/console  denetmen:run:url-test
 ```
 
-####Or you can use regex for routers.
+#### Or you can use regex for routers.
 
 You can filter your routes 
 
@@ -156,7 +156,7 @@ Example: Filter by starting with "get_"
 $app/console  denetmen:run:url-test --pattern='#^get_(.*)$#i'
 ```
 
-####Activate email notification:
+#### Activate email notification:
 You can activate email notification when one of your routers has any error.
 ```
 $app/console  denetmen:run:url-test  --alert-email='youremail@yourdomain.com'
